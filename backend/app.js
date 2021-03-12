@@ -28,6 +28,14 @@ app.get('/', (req, res) => {
   // res.sendFile(__dirname + '/index.html');
   res.send('Aizon\'s B.E Server Here. How may I help you?')
 });
+app.get('/towns', (req, res) => {
+  // res.sendFile(__dirname + '/index.html');
+  res.send(["Ibadan", "Lagos", "Benin", "Jos"])
+
+});
+
+
+
 
 // CHECKING FOR CONNECTION
 io.on('connection', (socket) => {
