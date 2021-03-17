@@ -4,41 +4,8 @@ const bcrypt = require('bcrypt')
 const dotenv = require('dotenv').config();
 const user = require('../models/user');
 const nml = require('nodemailer');
-const { google } = require("googleapis");
-const OAuth2 = google.auth.OAuth2;
-
-// AUTHENTICATION
-const myOAuth2Client = new OAuth2(
-  "44589431036-r7s0ls43f19bk3f56td9bqv6la1r6epf.apps.googleusercontent.com",
-  "dlhdE8DicVpQ11oST0iBz9wu",
-  "https://developers.google.com/oauthplayground"
-)
-
-const { google } = require("googleapis");
-const OAuth2 = google.auth.OAuth2;
-
-const myOAuth2Client = new OAuth2(
-  "44589431036-r7s0ls43f19bk3f56td9bqv6la1r6epf.apps.googleusercontent.com",
-  "dlhdE8DicVpQ11oST0iBz9wu",
-  "https://developers.google.com/oauthplayground"
-)
-const myAccessToken = myOAuth2Client.getAccessToken()
-
-const transport = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    type: "OAuth2",
-    user: "aizon.mailer@gmail.com",
-    clientId: "44589431036-r7s0ls43f19bk3f56td9bqv6la1r6epf.apps.googleusercontent.com",
-    clientSecret: "dlhdE8DicVpQ11oST0iBz9wu",
-    refreshToken: "1//04qApxRrWftI5CgYIARAAGAQSNwF-L9IrPs31PPRImenZaPjsMcLzkiVI-WXndwq2VAirfJio72yg1YHwgqIf9PdgPc4jr9uS-ww",
-    accessToken: "ya29.a0AfH6SMBrMJw7Xp2_vcZYXUdElZVyCfjwyXezU6n-uivTmVyJtoJFCgC-_jCGcP4UpQciEytT1CGzSOMr0jqbV09kDOG6s1qsw8nuAKJGCTIsEIBRE3vCrx25vN3AgxpmlsCq6c2UCPqn9xLAHyG-5tajdNMn"
-  }
-});
 
 
-
-// VARS DECLARATION
 let reg = false
 let newman = false
 var mail = "email.mail"
@@ -95,14 +62,23 @@ function validation(){
   try {
     if (newman)
     verifLink = "http://localhost:8100/verification?key="+ token
-    const mailOptions = {
+    var transporter = nml.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'aizon.mailer@gmail.com',
+      pass: process.env.MAILPASS
+    }
+    });
+
+    var mailOptions = {
       from: 'aizon.mailer@gmail.com',
       to: mail,
       subject: 'Email Verification for Aizon inc.',
       html: '<h3>This email has signed up for Aizon Lotter</h3><br>'
-      + '<p>Verifiy your Email <a href='+ verifLink + ' target="_blank">Here</a></p>'
-    }
-       transport.sendMail(mailOptions, function(error, info){
+        + '<p>Verifiy your Email <a href='+ verifLink + ' target="_blank">Here</a></p>' 
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
       if (error) {
         console.log(error);
       } else {
