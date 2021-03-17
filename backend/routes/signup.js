@@ -8,6 +8,12 @@ const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 
 
+const myOAuth2Client = new OAuth2(
+  "44589431036-r7s0ls43f19bk3f56td9bqv6la1r6epf.apps.googleusercontent.com",
+  "dlhdE8DicVpQ11oST0iBz9wu",
+  "https://developers.google.com/oauthplayground"
+  )
+
 let reg = false
 let newman = false
 var mail = "email.mail"
