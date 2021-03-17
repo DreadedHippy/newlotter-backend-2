@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt')
 const dotenv = require('dotenv').config();
 const user = require('../models/user');
 const nml = require('nodemailer');
+const { google } = require("googleapis");
+const OAuth2 = google.auth.OAuth2;
 
 
 let reg = false
