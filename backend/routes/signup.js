@@ -12,7 +12,7 @@ const myOAuth2Client = new OAuth2(
   "44589431036-r7s0ls43f19bk3f56td9bqv6la1r6epf.apps.googleusercontent.com",
   "dlhdE8DicVpQ11oST0iBz9wu",
   "https://developers.google.com/oauthplayground"
-  )
+)
 
 let reg = false
 let newman = false
@@ -69,32 +69,42 @@ let verifLink = ""
 function validation(){
   try {
     if (newman)
-    verifLink = "http://localhost:8100/verification?key="+ token
-    var transporter = nml.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'aizon.mailer@gmail.com',
-      pass: process.env.MAILPASS
-    }
+    myOAuth2Client.setCredentials({
+      refresh_token:"1//04qApxRrWftI5CgYIARAAGAQSNwF-L9IrPs31PPRImenZaPjsMcLzkiVI-WXndwq2VAirfJio72yg1YHwgqIf9PdgPc4jr9uS-ww"
     });
+    const myAccessToken = myOAuth2Client.getAccessToken()
+    verifLink = "http://localhost:8100/verification?key="+ token
+    const transport = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+           type: "OAuth2",
+           user: "aizon.mailer@gmail.com",
+           clientId: "44589431036-r7s0ls43f19bk3f56td9bqv6la1r6epf.apps.googleusercontent.com",
+           clientSecret: "dlhdE8DicVpQ11oST0iBz9wu",
+           refreshToken: "1//04qApxRrWftI5CgYIARAAGAQSNwF-L9IrPs31PPRImenZaPjsMcLzkiVI-WXndwq2VAirfJio72yg1YHwgqIf9PdgPc4jr9uS-ww",
+           accessToken: myAccessToken
+    }});
 
-    var mailOptions = {
+    const mailOptions = {
       from: 'aizon.mailer@gmail.com',
       to: mail,
       subject: 'Email Verification for Aizon inc.',
       html: '<h3>This email has signed up for Aizon Lotter</h3><br>'
         + '<p>Verifiy your Email <a href='+ verifLink + ' target="_blank">Here</a></p>' 
-    };
+    }
 
-    transporter.sendMail(mailOptions, function(error, info){
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
-        state = "verified"
-        return 'Sent'
+    transport.sendMail(mailOptions,function(err,result){
+      if(err){
+        res.send({
+          message:err
+        })
+      }else{
+        transport.close();
+        res.send({
+          message:'Email has been sent: check your inbox!'
+        })
       }
-    });
+    })
   }
 
   catch (err) {
